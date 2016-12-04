@@ -16,6 +16,19 @@
     color: #888;
 }
 
+.title-bar input[type=text] {
+    -webkit-appearance: none;
+    -webkit-app-region: no-drag;
+    text-align: center;
+    background: rgba(150, 150, 150, 0.2);
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    color: inherit;
+    font: inherit;
+}
+
+
 html, body, #app {
     height: 100%;
     background: transparent;
@@ -61,7 +74,7 @@ input[type=range]:focus {
 input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
-    background: #555;
+    background: #777;
     width: 10px;
     height: 10px;
     border-radius: 5px;
@@ -69,9 +82,8 @@ input[type=range]::-webkit-slider-thumb {
 
 input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
-    background: #eee;
+    background: rgba(150, 150, 150, 0.2);
     border-radius: 5px;
-    box-shadow: inset rgba(0, 0, 0, 0.1) 0 0 3px;
 }
 
 textarea {

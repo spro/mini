@@ -9,28 +9,44 @@ ipcRenderer = require('electron').ipcRenderer;
 
 fs = require('fs');
 
+ipcRenderer.send('ready', true);
+
 App = React.createClass({displayName: "App",
   getInitialState: function() {
     return {
       body: '',
       opacity: 100,
       saved: true,
-      inverted: false
+      inverted: false,
+      editing_filename: false,
+      filename: null
     };
   },
-  componentDidMount: function() {
+  readFile: function() {
     var e, error;
-    try {
-      this.setState({
-        body: fs.readFileSync('/Users/sean/Desktop/title.txt', 'utf8')
-      });
-    } catch (error) {
-      e = error;
-      console.log('no file');
+    if (this.state.filename != null) {
+      try {
+        return this.setState({
+          body: fs.readFileSync(this.state.filename, 'utf8')
+        });
+      } catch (error) {
+        e = error;
+        return alert("Can't open file " + this.state.filename + ": " + e);
+      }
     }
+  },
+  componentDidMount: function() {
+    this.readFile();
+    ipcRenderer.on('file-open', (function(_this) {
+      return function(event, filename) {
+        return _this.setState({
+          filename: filename
+        }, _this.readFile.bind(_this));
+      };
+    })(this));
     ipcRenderer.on('file-save', (function(_this) {
       return function() {
-        fs.writeFileSync('/Users/sean/Desktop/title.txt', _this.state.body);
+        fs.writeFileSync(_this.state.filename, _this.state.body);
         return _this.setState({
           saved: true
         });
@@ -56,7 +72,26 @@ App = React.createClass({displayName: "App",
     });
   },
   editFilename: function() {
-    return alert('ok?');
+    return this.setState({
+      editing_filename: true
+    }, (function(_this) {
+      return function() {
+        return _this.refs.filename.focus();
+      };
+    })(this));
+  },
+  changeFilename: function(e) {
+    return this.setState({
+      filename: e.target.value
+    });
+  },
+  onKeyDown: function(e) {
+    if (e.key === 'Enter') {
+      return this.setState({
+        editing_filename: false,
+        saved: false
+      });
+    }
   },
   render: function() {
     return React.createElement("div", {
@@ -66,12 +101,19 @@ App = React.createClass({displayName: "App",
       }
     }, React.createElement("div", {
       "className": 'title-bar'
-    }, React.createElement("div", {
-      "className": 'title',
+    }, (this.state.editing_filename ? React.createElement("input", {
+      "ref": 'filename',
+      "type": 'text',
+      "className": 'filename',
+      "onChange": this.changeFilename,
+      "onKeyDown": this.onKeyDown,
+      "value": this.state.filename
+    }) : React.createElement("div", {
+      "className": 'filename',
       "onDoubleClick": this.editFilename
-    }, "title.txt ", (this.state.saved ? '' : '*')), React.createElement("input", {
+    }, this.state.filename || 'untitled', " ", (this.state.saved ? '' : '*'))), React.createElement("input", {
       "type": 'range',
-      "min": 20,
+      "min": 40,
       "max": 100,
       "value": this.state.opacity,
       "onChange": this.changeOpacity
