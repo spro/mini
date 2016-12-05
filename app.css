@@ -14,6 +14,7 @@
     text-align: center;
     line-height: 22px;
     color: #888;
+    -webkit-user-select: none;
 }
 
 .title-bar input[type=text] {
@@ -52,18 +53,47 @@ body {
     color: #eee;
 }
 
-input[type=range] {
+.ranges {
     position: absolute;
-    top: 6px;
+    top: 3px;
     right: 6px;
+    background: none;
+    /* opacity: 0; */
+}
+
+.ranges a {
+    font-family: "Helvetica Neue";
+    text-transform: uppercase;
+    font-weight: bold;
+    position: relative;
+    top: -3px;
+    font-size: 12px;
+    border-radius: 7px;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    padding: 0;
+    margin-left: 5px;
+}
+
+.ranges a {
+    color: rgba(120, 120, 120, 0.3);
+}
+
+.ranges a:hover {
+    color: rgba(120, 120, 120, 0.7);
+}
+
+input[type=range] {
+    height: 14px;
     width: 50px;
     -webkit-appearance: none;
     -webkit-app-region: no-drag;
     background: transparent;
-    opacity: 0;
 }
 
-.title-bar:hover input[type=range] {
+.title-bar:hover .ranges {
     opacity: 1;
 }
 
@@ -75,15 +105,16 @@ input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     border: none;
     background: #777;
-    width: 10px;
-    height: 10px;
-    border-radius: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
+    height: 14px;
     background: rgba(150, 150, 150, 0.2);
-    border-radius: 5px;
+    border-radius: 7px;
 }
 
 textarea {
@@ -91,7 +122,6 @@ textarea {
     background: none;
     border: none;
     resize: none;
-    max-width: 400px;
     margin: 0 auto;
     font: inherit;
     color: inherit;

@@ -54,6 +54,10 @@ function setupMenu() {
       BrowserWindow.getFocusedWindow().webContents.send('file-save');
   }
 
+  function saveAs() {
+      openSaveDialog(BrowserWindow.getFocusedWindow())
+  }
+
   function invert() {
       BrowserWindow.getFocusedWindow().webContents.send('file-invert');
   }
@@ -64,22 +68,34 @@ function setupMenu() {
         submenu: [
             {click: open, label: 'Open', accelerator: 'Cmd+O'},
             {click: save, label: 'Save', accelerator: 'Cmd+S'},
+            {click: saveAs, label: 'Save As...', accelerator: 'Cmd+Shift+S'},
             {click: invert, label: 'invert', accelerator: 'Cmd+Shift+I'},
         ]
     });
     Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
 }
 
-function onOpened(open_win, filename) {
+function onOpened(_win, filename) {
     createWindow(filename.toString(), 1700, -100);
 }
 
-function openOpenDialog(open_win) {
-    dialog.showOpenDialog(open_win, {
+function onSaved(_win, filename) {
+    _win.webContents.send('file-saveas', filename.toString())
+}
+
+function openOpenDialog(_win) {
+    dialog.showOpenDialog(_win, {
         defaultPath: '/Users/sean/Desktop',
         properties: ['openFile'],
         filters: [{ name: 'Text', extensions: ['txt', 'js', 'md']}]
-    }, onOpened.bind(null, open_win));
+    }, onOpened.bind(null, _win));
+}
+
+function openSaveDialog(_win) {
+    dialog.showSaveDialog(_win, {
+        defaultPath: '/Users/sean/Desktop',
+        filters: [{ name: 'Text', extensions: ['txt', 'js', 'md']}]
+    }, onSaved.bind(null, _win));
 }
 
 // This method will be called when Electron has finished
